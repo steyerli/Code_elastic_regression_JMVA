@@ -1,5 +1,3 @@
-# Code for "Regression in Quotient Metric Spaces with a Focus on Elastic Curves"
-
 This repository contains the code for the paper:
 
 **_"Regression in Quotient Metric Spaces with a Focus on Elastic Curves"_**  

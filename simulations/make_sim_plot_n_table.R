@@ -1,8 +1,9 @@
+setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
 library(elasdics)
 library(ggplot2)
 library(ggpubr)
-source("fit_frechet_regression.R")
-source("fit_elastic_curve.R")
+source("helper_functions/fit_frechet_regression.R")
+source("helper_functions/fit_elastic_curve.R")
 
 HUblue <- colorRampPalette(c(rgb(1,1,1), rgb(0, 55/255, 108/255)))(8)
 HUred <- colorRampPalette(c(rgb(1,1,1), rgb(138/255, 15/255, 20/255)))(8)
@@ -34,7 +35,7 @@ create_one_plot <- function(regression_models, x_select = c(-1, -0.6, 0, 0.4, 1)
                            "pre_align_curve" = predict_elastic_curve(regression_models[[3]][[4]], x),
                            "frechet" = predict_frechet_model(regression_models[[3]][[5]]))
 model <- c("quotient\n regression", "pre align,\n srv fit", "iterate align,\n curve fit",
-             "pre align,\n curve fit", "Fréchet\n regression")
+             "pre align,\n curve fit", "Fr?chet\n regression")
   
   model_data <- lapply(1:length(model_select), function(k){
     model_data_list <- lapply(model_select[[k]], function(j){
@@ -84,46 +85,35 @@ model <- c("quotient\n regression", "pre align,\n srv fit", "iterate align,\n cu
 }
 #################################
 # create plots for simulation section
-g_1 <- create_one_plot(readRDS("simulation_data/regression_models_1_101"),
+create_one_plot(readRDS("simulation_data/regression_models_1_101"),
                        x_select = c(-1, 0, 1), model_select = list(1:2, 3:5),
                        reverse = TRUE) +
                         theme(plot.margin=unit(c(0,0,-2,0), "cm"))
 
-g_2 <- create_one_plot(readRDS("simulation_data/regression_models_5_102"),
+create_one_plot(readRDS("simulation_data/regression_models_5_102"),
                        x_select = c(-1, 0, 1), model_select = list(1:2, 3:5),
                        reverse = TRUE) + ylab("") +
                         theme(plot.margin=unit(c(0,0,-2, 0), "cm"), 
                               axis.text.y=element_blank(),
                               axis.ticks.y=element_blank())
   
-g_3 <- create_one_plot(readRDS("simulation_data/regression_models_11_102"),
+create_one_plot(readRDS("simulation_data/regression_models_11_102"),
                        x_select = c(-1, 0, 1), model_select = list(1:2, 3:5),
                        reverse = TRUE) + ylab("") +
                         theme(plot.margin=unit(c(0,0,-2,0), "cm"), 
                               axis.text.y=element_blank(),
                               axis.ticks.y=element_blank())
-
-ggarrange(g_1, g_2, g_3,
-          ncol = 3, nrow = 1, common.legend = TRUE, legend = "bottom",
-          align = "hv") %>% 
-  ggexport(filename = "../../../Figures/simulated_models.pdf", width = 12, height = 5)
 #################################
 x <- -5:5/5
 # create plots for appendix
-pdf("../../../Figures/simulation_1.pdf", width = 10, height = 10)
 create_one_plot(readRDS("simulation_data/regression_models_1_101"),
                 x_select = x, reverse = TRUE)
-dev.off()
-##############
-pdf("../../../Figures/simulation_5.pdf", width = 10, height = 10)
+
 create_one_plot(readRDS("simulation_data/regression_models_5_102"),
                 x_select = x, reverse = TRUE)
-dev.off()
-##############
-pdf("../../../Figures/simulation_11.pdf", width = 10, height = 10)
+
 create_one_plot(readRDS("simulation_data/regression_models_11_102"),
                 x_select = x, reverse = TRUE)
-dev.off()
 #################################################################################
 library(xtable)
 file_list <- list.files("simulation_data/")

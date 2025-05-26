@@ -1,3 +1,4 @@
+setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
 library(elasdics)
 library(ggplot2)
 library(xtable)
@@ -40,36 +41,6 @@ P_reject_H0_data <- lapply(c(10,30,60), function(n_data){
 })
 P_reject_H0_data <- do.call("rbind", P_reject_H0_data)
 print(xtable(P_reject_H0_data, digits = c(0,0,0,2,2,2)), include.rownames=FALSE)
-##################################
-#global test
-# decisions_data_global <- sapply(file_list, function(file){
-#   n_data_N_boot <- as.numeric(strsplit(file, "_")[[1]][3:4])
-#   bootstrap_data <- readRDS(paste0("bootstrap_sim_data/", file))
-#   if(class(bootstrap_data) == "try-error"){
-#     keep_H0 <-rep(NA, 3)
-#   } else {
-#     keep_H0 <- sapply(bootstrap_data$beta_vectors, function(beta){
-#       beta_i_centered <- t(t(beta) - colMeans(beta))
-#       t_obs <- apply(beta_i_centered, 1, function(beta_i){
-#         beta_i%*%solve(cov(beta))%*%beta_i
-#         })
-#       q <- sort(t_obs)[round(length(t_obs)*(1-0.05))]
-#       colMeans(beta)%*%solve(cov(beta))%*%colMeans(beta) <= q
-#     })
-#   }
-#   names(keep_H0) <- c("beta1", "beta2", "beta3")
-#   c("n_data" = n_data_N_boot[2], "N_boot" = n_data_N_boot[1], keep_H0)
-# })
-# decisions_data_global <- data.frame(t(decisions_data_global))
-# P_reject_H0_data <- lapply(c(10,30,60), function(n_data){
-#   t(sapply(c(100, 500, 1000), function(N_boot){
-#     which_idx <- decisions_data_global$n_data == n_data & decisions_data_global$N_boot == N_boot
-#     c("n_data" = n_data, "N_boot" = N_boot, 
-#       1 - apply(decisions_data_global[which_idx, 3:5], 2, mean, na.rm = TRUE))
-#   }))
-# })
-# P_reject_H0_data <- do.call("rbind", P_reject_H0_data)
-# print(xtable(P_reject_H0_data, digits = c(0,0,0,2,2,2)), include.rownames=FALSE)
 ##########################################################################################
 ##########################################################################################
 true_model <- readRDS("true_model.RDS")
